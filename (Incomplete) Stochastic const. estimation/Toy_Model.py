@@ -11,7 +11,50 @@ from pysb import  Parameter
 
 
 
-fba_model = Model('example_model')
+model = Model('example_model')
+# from kineticmodel import model as kineticmodel
+
+
+# Parameter('Enz1', 15e-3)
+# Parameter('Enz2', 15e-3)
+# Parameter('Enz3', 15e-3)
+# Parameter('Enz4', 15e-3)
+# Parameter('Enz5', 15e-3)
+# Parameter('Enz6', 15e-3)
+# Parameter('Enz7', 15e-3)
+# Parameter('Enz8', 15e-3)
+# Parameter('Enz9', 15e-3)
+# Parameter('Enz10', 15e-3)
+# Parameter('Enz11', 15e-3)
+# Parameter('Enz12', 15e-3)
+# Parameter('Enz13', 15e-3)
+# Parameter('Enz14', 15e-3)
+# Parameter('Enz15', 15e-3)
+# Parameter('Enz16', 15e-3)
+# Parameter('Enz17', 15e-3)
+# Parameter('Enz18', 15e-3)
+
+
+Parameter('kcat1', 1000.0)
+Parameter('kcat2', 830) 
+Parameter('kcat3', 1.3) 
+Parameter('kcat4', 1.0e-3)
+Parameter('kcat5', 3.3e-6)
+Parameter('kcat6', 2.3)
+Parameter('kcat7', 1.0e-3)
+Parameter('kcat8', 8.3e-6)
+Parameter('kcat9', 1.3)
+
+#Rates for 2-AG and COX2 interactions at catalytic site
+Parameter('kcat10', 1000.0)
+Parameter('kcat11', 760.0) 
+Parameter('kcat12', 1.2) 
+Parameter('kcat13', 1.0e-3)
+Parameter('kcat14', 4.8e-4)
+Parameter('kcat15', 1.0e-3)
+Parameter('kcat16', 1.9e-6)
+Parameter('kcat17', 0.21)
+Parameter('kcat18', 0.21)
 
 reaction1 = Reaction('R_1')
 reaction2 = Reaction('R_2')
@@ -34,7 +77,7 @@ reaction18 = Reaction('R_18')
 
 
 
-for rxn in fba_model.reactions:
+for rxn in model.reactions:
     rxn.subsystem='Cell Envelope Biosynthesis'
 
 
@@ -348,37 +391,37 @@ Met_12 : -1,
 
  # string representation of the reactions
 
-for rxn in fba_model.reactions:
+for rxn in model.reactions:
     rxn.reaction
 
-fba_model.add_reactions([reaction1,reaction2,reaction3,reaction4,reaction5,reaction6,reaction7,
+model.add_reactions([reaction1,reaction2,reaction3,reaction4,reaction5,reaction6,reaction7,
                      reaction8,reaction9,reaction10,reaction11,reaction12,reaction13,reaction14
                      ,reaction15,reaction16,reaction17,reaction18])
 
 # Iterate through the the objects in the model
 print("Reactions")
 print("---------")
-for rxn in fba_model.reactions:
+for rxn in model.reactions:
     print("%s : %s" % (rxn.id, rxn.reaction))
 
 print("")
 print("Metabolites")
 print("-----------")
-for met in fba_model.metabolites:
+for met in model.metabolites:
     print('%9s : %s' % (met.id, met.formula))
 
 print("")
 print("Genes")
 print("-----")
-for x in fba_model.genes:
+for x in model.genes:
     associated_ids = (i.id for i in x.reactions)
     print("%s is associated with reactions: %s" %
           (x.id, "{" + ", ".join(associated_ids) + "}"))
-fba_model.objective ="R_3"
+model.objective ="R_3"
 # The upper bound should be 1000, so that we get
 # the actual optimal value
-fba_model.reactions.get_by_id("R_3").upper_bound = 1000.
-fba_model.objective
+model.reactions.get_by_id("R_3").upper_bound = 1000.
+model.objective
 
 
 
@@ -396,11 +439,11 @@ Kcat=[1000.0, 830, 1.3, 1.0e-3,3.3e-6 ,2.3 ,1.0e-3,8.3e-6, 1.3,1000,760,1.0e-3,1
 #     model.add_cons_vars(constraint)
     
 for i in range (17) :     #shoud be assigned to reactions
-      constraint = fba_model.problem.Constraint(0, lb=0, ub=Kcat[i]*50 )
-      fba_model.add_cons_vars(constraint)
+      constraint = model.problem.Constraint(0, lb=0, ub=Kcat[i]*50 )
+      model.add_cons_vars(constraint)
 
-print(fba_model.objective.expression)
-print(fba_model.objective.direction)
+print(model.objective.expression)
+print(model.objective.direction)
 
 
 import tempfile
@@ -411,7 +454,7 @@ with tempfile.NamedTemporaryFile(suffix='.xml') as f_sbml:
    # write_sbml_model(model, filename=f_sbml.name)
    # report = validate_sbml_model(filename=f_sbml.name)
       
-    write_sbml_model(fba_model, 'Toy_Model')
+    write_sbml_model(model, 'Toy_Model')
     report = validate_sbml_model('Toy_Model')
    
 pprint(report)
